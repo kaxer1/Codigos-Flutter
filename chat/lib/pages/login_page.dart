@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import 'package:chat/helpers/mostrar_alerta.dart';
+
+import 'package:chat/services/auth_service.dart';
+
 import 'package:chat/widgets/boton_azul.dart';
 import 'package:chat/widgets/custom_input.dart';
 import 'package:chat/widgets/labels.dart';
@@ -52,6 +58,8 @@ class __FromState extends State<_From> {
 
   @override
   Widget build(BuildContext context) {
+    
+    final authService = Provider.of<AuthService>(context, listen: false);
     // ignore: avoid_unnecessary_containers
     return Container(
       margin: const EdgeInsets.only(top: 40),
@@ -74,11 +82,19 @@ class __FromState extends State<_From> {
           ),
           BotonAzul(
             text: 'Ingrese', 
-            onPressed: () {
-              // ignore: avoid_print
-              print(emailCtrl.text);
-              // ignore: avoid_print
-              print(passCtrl.text);
+            onPressed: authService.autenticando ? null : () async {
+              FocusScope.of(context).unfocus(); // para quitar teclado o quitar focus en formulario
+              
+              final loginOk = await authService.login(emailCtrl.text.trim(), passCtrl.text.trim());
+
+              if (loginOk) {
+                // ignore: use_build_context_synchronously
+                Navigator.pushReplacementNamed(context, 'usuarios');
+              } else {
+                // ignore: use_build_context_synchronously
+                mostrarAlerta(context,'Login incorrecto', 'Revise sus credenciales nuevamente');
+              }
+
             } 
           )
         ]

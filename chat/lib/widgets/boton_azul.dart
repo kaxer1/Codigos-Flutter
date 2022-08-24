@@ -11,7 +11,7 @@ class BotonAzul extends StatelessWidget {
         );
 
   final String text;
-  final void Function() onPressed;
+  final void Function()? onPressed;
 
   BotonAzul({
     super.key, 
