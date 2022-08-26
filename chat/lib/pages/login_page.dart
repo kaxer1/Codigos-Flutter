@@ -1,3 +1,4 @@
+import 'package:chat/services/socket_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -59,7 +60,8 @@ class __FromState extends State<_From> {
   @override
   Widget build(BuildContext context) {
     
-    final authService = Provider.of<AuthService>(context, listen: false);
+    final authService = Provider.of<AuthService>(context);
+    final socketService = Provider.of<SocketService >(context);
     // ignore: avoid_unnecessary_containers
     return Container(
       margin: const EdgeInsets.only(top: 40),
@@ -88,6 +90,7 @@ class __FromState extends State<_From> {
               final loginOk = await authService.login(emailCtrl.text.trim(), passCtrl.text.trim());
 
               if (loginOk) {
+                socketService.conect();
                 // ignore: use_build_context_synchronously
                 Navigator.pushReplacementNamed(context, 'usuarios');
               } else {
